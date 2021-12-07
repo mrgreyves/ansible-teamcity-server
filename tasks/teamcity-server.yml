@@ -5,7 +5,6 @@
     dest: "/tmp/TeamCity-{{ teamcity_server_version }}.tar.gz"
     validate_certs: no
     timeout: 60
-    checksum: "sha256:{{ teamcity_server_sha256 }}"
   register: _teamcity_package
 
 - name: "Add TeamCity service default config"
@@ -32,13 +31,13 @@
   service:
     name: teamcity-server
     state: stopped
-  when: _teamcity_package|changed
+  when: _teamcity_package.changed
 
 - name: "Ensure that upgrade will not fail"
   file:
     path: "{{ teamcity_server_dir }}/webapps"
     state: absent
-  when: _teamcity_package|changed
+  when: _teamcity_package.changed
 
 - name: "Unpack distribution"
   unarchive:
